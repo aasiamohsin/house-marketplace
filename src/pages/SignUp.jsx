@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   getAuth,
@@ -56,7 +57,7 @@ export const SignUp = () => {
       // Navigate to home
       navigate('/');
     } catch (error) {
-      console.error(error);
+      toast.error('Something went wrong. Registration failed!');
     }
   };
 

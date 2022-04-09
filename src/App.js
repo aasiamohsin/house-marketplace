@@ -1,3 +1,5 @@
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { NavBar } from './components/NavBar';
 import { Explore } from './pages/Explore';
@@ -21,6 +23,7 @@ function App() {
         </Routes>
         <NavBar />
       </Router>
+      <ToastContainer position='top-center' />
     </>
   );
 }
