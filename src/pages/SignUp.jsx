@@ -106,7 +106,7 @@ export const SignUp = () => {
               onClick={() => setShowPassword(!showPassword)}
             />
           </div>
-          <Link to='/forgot-password' className='forgotPasswordLink'>
+          <Link to='/forgotpassword' className='forgotPasswordLink'>
             Forgot Password
           </Link>
 
