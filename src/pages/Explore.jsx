@@ -21,7 +21,7 @@ export const Explore = () => {
             />
             <p className='exploreCategoryName'>Places for Rent</p>
           </Link>
-          <Link to='/category/sell'>
+          <Link to='/category/sale'>
             <img
               className='exploreCategoryImg'
               src={sellCategoryImage}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   collection,
   getDocs,
@@ -12,19 +13,21 @@ import { toast } from 'react-toastify';
 import { Spinner } from '../components/Spinner';
 import { ListingItem } from '../components/ListingItem';
 
-export const Offers = () => {
+export const Category = () => {
   const [listings, setListings] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const params = useParams();
 
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        // Get reference of listing from database
+        // Get reference
         const listingRef = collection(db, 'listings');
         // Create Query
         const q = query(
           listingRef,
-          where('offer', '==', true),
+          where('type', '==', params.categoryName),
           orderBy('timestamp', 'desc'),
           limit(10)
         );
@@ -33,8 +36,8 @@ export const Offers = () => {
         const querySnap = await getDocs(q);
 
         const listings = [];
-
         querySnap.forEach((doc) => {
+          console.log(doc.data());
           return listings.push({
             id: doc.id,
             data: doc.data(),
@@ -42,7 +45,6 @@ export const Offers = () => {
         });
 
         setListings(listings);
-
         setLoading(false);
       } catch (error) {
         toast.error('Could not load data.');
@@ -50,12 +52,16 @@ export const Offers = () => {
     };
 
     fetchListings();
-  }, []);
+  }, [params.categoryName]);
 
   return (
     <div className='category'>
       <header>
-        <p className='pageHeader'>Offers</p>
+        <p className='pageHeader'>
+          {params.categoryName === 'rent'
+            ? 'Places for rent'
+            : 'Places for sale'}
+        </p>
       </header>
       {loading ? (
         <Spinner />
@@ -74,7 +80,7 @@ export const Offers = () => {
           </main>
         </>
       ) : (
-        <p>There are no current offer to display.</p>
+        <p>No list to display for {params.categoryName}.</p>
       )}
     </div>
   );
