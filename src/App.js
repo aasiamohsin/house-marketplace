@@ -10,6 +10,7 @@ import { Profile } from './pages/Profile';
 import { SignIn } from './pages/SignIn';
 import { SignUp } from './pages/SignUp';
 import { Category } from './pages/Category';
+import { CreateListing } from './pages/CreateListing';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           </Route>
           {/* <Route path='/profile' element={<Profile />} /> */}
           <Route path='/forgotpassword' element={<ForgotPassword />} />
+          <Route path='/createListing' element={<CreateListing />} />
         </Routes>
         <NavBar />
       </Router>
