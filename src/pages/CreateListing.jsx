@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 
@@ -93,9 +94,54 @@ export const CreateListing = () => {
     }
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    setLoading(true);
+
+    // Makes sure the discounted price is less than the regular price.
+    if (discountedPrice >= regularPrice) {
+      setLoading(false);
+      toast.error('Discounted price should be less then regular price.');
+      return;
+    }
+
+    // Makes sure images length must be less than 6
+    if (images.length > 6) {
+      setLoading(false);
+      toast.error('Max six images can be added.');
+      return;
+    }
+
+    let geolocation = {};
+    let location;
+
+    if (geolocationEnabled) {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
+      );
+
+      const data = await response.json();
+      console.log(data);
+
+      geolocation.lat = data.results[0]?.geometry.location.lat ?? 0;
+      geolocation.lng = data.results[0]?.geometry.location.lng ?? 0;
+
+      location =
+        data.status === 'ZERO_RESULTS'
+          ? undefined
+          : data.results[0]?.formatted_address;
+
+      if (location === undefined || location.includes('undefined')) {
+        setLoading(false);
+        toast.error('Please enter a correct address.');
+      }
+    } else {
+      geolocation.lat = latitude;
+      geolocation.lng = longitude;
+      location = address;
+    }
+
+    setLoading(false);
   };
 
   if (loading) return <Spinner />;
