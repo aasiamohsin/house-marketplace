@@ -6,6 +6,7 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from 'firebase/storage';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
@@ -147,7 +148,7 @@ export const CreateListing = () => {
     } else {
       geolocation.lat = latitude;
       geolocation.lng = longitude;
-      location = address;
+      // location = address;
     }
 
     // Store images in firebase
@@ -210,7 +211,28 @@ export const CreateListing = () => {
       return;
     });
 
-    console.log(imgUrls);
+    // Update form data
+    const formDataCopy = {
+      ...formData,
+      imgUrls,
+      geolocation,
+      timestamp: serverTimestamp(),
+    };
+
+    delete formDataCopy.images;
+    delete formDataCopy.address;
+    formDataCopy.location = address;
+
+    // location && (formDataCopy.location = location);
+
+    !formDataCopy.offer && delete formDataCopy.discountedPrice;
+
+    // Add new listing with updated form data in the database
+    const docRef = await addDoc(collection(db, 'listings'), formDataCopy);
+
+    toast.success('List Added.');
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+
     setLoading(false);
   };
 
