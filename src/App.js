@@ -12,6 +12,7 @@ import { SignUp } from './pages/SignUp';
 import { Category } from './pages/Category';
 import { CreateListing } from './pages/CreateListing';
 import { Listing } from './pages/Listing';
+import { Contact } from './pages/Contact';
 
 function App() {
   return (
@@ -21,7 +22,10 @@ function App() {
           <Route path='/' element={<Explore />} />
           <Route path='/offers' element={<Offers />} />
           <Route path='/category/:categoryName' element={<Category />} />
-          <Route path='/category/:categoryName/:id' element={<Listing />} />
+          <Route
+            path='/category/:categoryName/:listingId'
+            element={<Listing />}
+          />
           <Route path='/signIn' element={<SignIn />} />
           <Route path='/signUp' element={<SignUp />} />
           <Route path='/profile' element={<PrivateRoute />}>
@@ -30,6 +34,7 @@ function App() {
           {/* <Route path='/profile' element={<Profile />} /> */}
           <Route path='/forgotpassword' element={<ForgotPassword />} />
           <Route path='/createListing' element={<CreateListing />} />
+          <Route path='/contact/:landlordId' element={<Contact />} />
         </Routes>
         <NavBar />
       </Router>

@@ -231,7 +231,7 @@ export const CreateListing = () => {
     const docRef = await addDoc(collection(db, 'listings'), formDataCopy);
 
     toast.success('List Added.');
-    navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+    navigate(`/category/${formDataCopy.type}/${docRef.listingId}`);
 
     setLoading(false);
   };
