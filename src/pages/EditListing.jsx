@@ -14,6 +14,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 
 export const EditListing = () => {
+  // eslint-disable-next-line
   const [geolocationEnabled, setGeolocationEnabled] = useState(false);
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -102,6 +103,7 @@ export const EditListing = () => {
       toast.error('You are not authorized to make changes.');
       navigate('/');
     }
+    // eslint-disable-next-line
   }, []);
 
   const onMutate = (e) => {
@@ -213,6 +215,8 @@ export const EditListing = () => {
                 break;
               case 'running':
                 console.log('Upload is running');
+                break;
+              default:
                 break;
             }
           },

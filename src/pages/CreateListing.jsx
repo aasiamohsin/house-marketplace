@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 
 export const CreateListing = () => {
+  // eslint-disable-next-line
   const [geolocationEnabled, setGeolocationEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFromData] = useState({
@@ -184,6 +185,8 @@ export const CreateListing = () => {
                 break;
               case 'running':
                 console.log('Upload is running');
+                break;
+              default:
                 break;
             }
           },
