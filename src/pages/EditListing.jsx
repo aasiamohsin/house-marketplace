@@ -6,15 +6,16 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from 'firebase/storage';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 
-export const CreateListing = () => {
+export const EditListing = () => {
   const [geolocationEnabled, setGeolocationEnabled] = useState(false);
+  const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [formData, setFromData] = useState({
     type: 'rent',
@@ -51,6 +52,7 @@ export const CreateListing = () => {
   // Get  a reference to firebase
   const auth = getAuth();
   const navigate = useNavigate();
+  const params = useParams();
   const isMounted = useRef(true);
 
   useEffect(() => {
@@ -74,6 +76,33 @@ export const CreateListing = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
+
+  // Fetch listing to edit
+  useEffect(() => {
+    setLoading(true);
+    const fetchListing = async () => {
+      const docRef = doc(db, 'listings', params.listingId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setListing(docSnap.data());
+        setFromData({ ...docSnap.data(), address: docSnap.data().location });
+        setLoading(false);
+      } else {
+        navigate('/');
+        toast.error('Listing does not exists.');
+      }
+    };
+
+    fetchListing();
+  }, [params.listingId, navigate]);
+
+  // Redirect to home page if not authorized user
+  useEffect(() => {
+    if (listing && listing.useRef !== auth.currentUser.uid) {
+      toast.error('You are not authorized to make changes.');
+      navigate('/');
+    }
+  }, []);
 
   const onMutate = (e) => {
     let boolean = null;
@@ -227,8 +256,9 @@ export const CreateListing = () => {
 
     !formDataCopy.offer && delete formDataCopy.discountedPrice;
 
-    // Add new listing with updated form data in the database
-    const docRef = await addDoc(collection(db, 'listings'), formDataCopy);
+    // Update listing
+    const docRef = doc(db, 'listings', params.listingId);
+    await updateDoc(docRef, formDataCopy);
 
     setLoading(false);
     toast.success('List Added.');
@@ -240,7 +270,7 @@ export const CreateListing = () => {
   return (
     <div className='profile'>
       <header>
-        <p className='pageHeader'> Create a Listing </p>
+        <p className='pageHeader'>Edit Listing</p>
       </header>
       <main>
         <form onSubmit={onSubmit}>
@@ -458,7 +488,7 @@ export const CreateListing = () => {
             required
           />
           <button className='primaryButton createListingButton' type='submit'>
-            Create Listing
+            Update Listing
           </button>
         </form>
       </main>

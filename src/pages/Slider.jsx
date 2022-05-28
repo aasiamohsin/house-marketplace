@@ -37,6 +37,9 @@ export const Slider = () => {
 
   if (loading) return <Spinner />;
 
+  if (listing.length === 0)
+    return <p className='exploreHeading'>No Recommended Listing.</p>;
+
   return (
     listing && (
       <>
